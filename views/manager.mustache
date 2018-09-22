@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Menu Manager</title>
+    <!-- 2 load the theme CSS file -->
+    <link rel="stylesheet" href="dist/themes/default/style.min.css" />
+
+    <style>
+        .tomorrow a.ui-state-default {
+            background-color: #98f442;
+            background-image: none;
+        }
+        
+        .ui-state-default.ui-state-active.ui-state-highlight a {
+            border: 1px solid #C90212 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>{{title}}</h1>
+    <form method="post" id="form">
+        <p>Date:
+            <input type="text" id="datepicker">
+        </p>
+
+        <!-- 3 setup a container element -->
+        <div id="jstree">
+
+            <!-- in this example the tree is populated from inline HTML -->
+            <ul>
+                <li>Menu
+                    <ul>
+                        <li>Breakfast
+                            <ul>
+                                <li>Entrees -Limit 2
+                                    <ul>
+                                        <li>Buttermilk Pancakes</li>
+                                        <li>Scrambled Eggs</li>
+                                        <li>Cheerios</li>
+                                        <li>Corn Flakes</li>
+                                        <li>Raisin Bran</li>
+                                    </ul>
+                                </li>
+                                <li>Sides -Limit 3
+                                    <ul>
+                                        <li>Hash Browns</li>
+                                        <li>Bacon Sausage</li>
+                                        <li>Turkey Sausage</li>
+                                        <li>Banana</li>
+                                        <li>Fresh Fruit cup</li>
+                                        <li>Vanila yogurt</li>
+                                    </ul>
+                                </li>
+                                <li>Hot Cereal -Limit 1
+                                    <ul>
+                                        <li>Oatmeal</li>
+                                        <li>Cream of Wheat</li>
+                                    </ul>
+                                </li>
+                                <li>Beverages -Limit 2
+                                    <ul>
+                                        <li>Decaf Coffee</li>
+                                        <li>Decaf Tea</li>
+                                        <li>Apple Juice</li>
+                                        <li>Orange Juice</li>
+                                        <li>Milk 1%</li>
+                                        <li>Milk 2%</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>Lunch
+                            <ul>
+                                <li>Select 1 option
+                                    <ul>
+                                        <li>Cheeseburger/chicken noodle soup/green beans/apple</li>
+                                        <li>Chicken tenders/steak fries/side salad/fruit cup</li>
+                                    </ul>
+                                </li>
+                                <li>Beverages -Limit 2
+                                    <ul>
+                                        <li>Decaf Coffee</li>
+                                        <li>Decaf Tea</li>
+                                        <li>Apple Juice</li>
+                                        <li>Orange Juice</li>
+                                        <li>Milk 1%</li>
+                                        <li>Milk 2%</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>Dinner
+                            <ul>
+                                <li>Select 1 option
+                                    <ul>
+                                        <li>Meatloaf/mash potatoes/mixed vegetables/banana</li>
+                                        <li>Roast turkey/stuffing/brocoli/fruit cup</li>
+                                    </ul>
+                                </li>
+                                <li>Beverages -Limit 2
+                                    <ul>
+                                        <li>Decaf Coffee</li>
+                                        <li>Decaf Tea</li>
+                                        <li>Apple Juice</li>
+                                        <li>Orange Juice</li>
+                                        <li>Milk 1%</li>
+                                        <li>Milk 2%</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+    </form>
+    <button id="new">new menu</button>
+    <button id="save">save menu</button>
+    <button id="delete">delete menu</button>
+    <br>
+    <button id="loadTemplate">load template</button>
+    <button id="saveTemplate">save as template</button>
+    <button id="list">view list</button>
+
+    <!-- 4 include the jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- 5 include the jstree source -->
+    <script src="dist/jstree.min.js"></script>
+
+    <!-- include jstreegrid -->
+    <script src="jstreegrid.js"></script>
+
+    <!-- jQuery UI for datepicker -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(function() {
+            $("#datepicker").datepicker({
+                //make tomorrow's date green
+                beforeShowDay: function(eachdate) {
+                    var currentDate = new Date();
+                    //January is 0!!
+                    var tomorrow = (currentDate.getMonth() + 1) + '-' + (currentDate.getDate() + 1) + '-' + currentDate.getFullYear();
+                    var mdy = (eachdate.getMonth() + 1) + '-' + eachdate.getDate() + '-' + eachdate.getFullYear();
+                    if (mdy == tomorrow) {
+                        return [true, "tomorrow"];
+                    } else {
+                        return [true, ""]
+                    }
+                },
+                //to delever date as url parameter
+                dateFormat: 'mm-dd-yy',
+                onSelect: function(date, event) {
+                    loadJSTree(date);
+                }
+            });
+            var date = new Date();
+
+            var tomorrow = new Date(date.getFullYear(), date.getMonth(), (date.getDate() + 1));
+            $("#datepicker").datepicker("setDate", tomorrow);
+            // 6 create an instance when the DOM is ready
+            
+            $('#jstree').jstree({
+                "core": {
+                    "animation": 0,
+                    "themes": {
+                        "icons": false
+                    },
+                    // so that create works
+                    "check_callback": true
+                },
+                "plugins": ["contextmenu", "grid"],
+                grid:{
+                    contextmenu: true,
+                    gridcontextmenu: true,
+                    columns: [
+                        {width: 500, header: "Nodes"},
+                        {width: 100, header: "Limit", value: "limit"},
+                        {width: 100, header: "Sum", value: "sum"}
+                    ]
+                }
+            });
+            
+            //load tomorrow's menu
+            loadJSTree($('#datepicker').val());
+
+            /*
+            // 7 bind to events triggered on the tree
+            $('#jstree').on("changed.jstree", function (e, data) {
+              console.log(data.selected);
+            });
+            */
+
+
+
+            function loadJSTree(identifier) {
+                $.ajax({
+                    async: true,
+                    type: "GET",
+                    url: "manager/menu/" + identifier,
+                    dataType: "json",
+                    success: function(json) {
+                        //structure of json: { date: "mm-dd-yyyy", jstree: "JSTree JSON Array"}
+                        createJSTree(json.jstree);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+                });
+
+                function createJSTree(jstree) {
+                    $('#jstree').jstree().destroy();
+                    $('#jstree').jstree({
+                        "core": {
+                            "animation": 0,
+                            "data": jstree,
+                            "themes": {
+                                "icons": false
+                            },
+                            // so that create works
+                            "check_callback": true
+                        },
+                        "plugins": ["contextmenu", "grid"],
+                        grid:{
+                            contextmenu: true,
+                            gridcontextmenu: true,
+                            columns: [
+                                {width: 500, header: "Nodes"},
+                                {width: 100, header: "Limit", value: "limit"},
+                                {width: 100, header: "Sum", value: "sum"}
+                            ]
+                        }
+                    });
+                    $('#jstree').jstree().open_all();
+                }
+            }
+
+            function trimText(current, depth) {
+                //delete newline and white spaces created due to bug of jstree plugin
+                var children = current.children;
+
+                if (current.text.indexOf("\n") >= 0) {
+                    current.text = current.text.substr(0, current.text.indexOf("\n"));
+                }
+                for (var i = 0, len = children.length; i < len; i++) {
+                    trimText(children[i], depth + 1);
+                }
+            }
+
+            function saveJSTree(identifier, array) {
+                var json = {
+                        date: identifier,
+                        jstree: array
+                    }
+                    // Post a menu using AJAX
+                var data = JSON.stringify(json);
+                var url = "manager/menu/" + identifier;
+                //There is a bug when sending nested array json with jQuery ajax post method: empty arrays and other things get deleted
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", url, true);
+                xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+                xhr.onload = function() {
+                    var result = JSON.parse(xhr.responseText);
+                    if (xhr.readyState == 4 && xhr.status == "200") {
+                        alert("Successfully saved")
+                    } else {
+                        alert("Error: " + xhr.status);
+                    }
+                }
+                xhr.send(data);
+            }
+
+            function deleteJSTree(identifier) {
+                var url = "manager/menu/" + identifier;
+                var xhr = new XMLHttpRequest();
+                xhr.open("DELETE", url, true);
+                xhr.onload = function() {
+                    if (xhr.readyState == 4 && xhr.status == "204") {
+                        alert("Successfully deleted")
+                    } else {
+                        alert("Error: " + xhr.status);
+                    }
+                }
+                xhr.send();
+            }
+            $('#new').on('click', function() {
+                loadJSTree("new");
+            });
+            $('#save').on('click', function() {
+                //date: mm-dd-yyyy
+                var date = $('#datepicker').val();
+                //Prepare json
+                var array = $('#jstree').jstree().get_json();
+                array.forEach(function(item) {
+                    trimText(item, 0)
+                });
+                saveJSTree(date, array);
+            });
+            $('#delete').on('click', function() {
+                $('#jstree').jstree().destroy();
+                $('#jstree').jstree();
+
+                //date: mm-dd-yyyy
+                var date = $('#datepicker').val();
+                deleteJSTree(date);
+                loadJSTree("new");
+            });
+
+            $('#loadTemplate').on('click', function() {
+                loadJSTree("template");
+            });
+
+            $('#saveTemplate').on('click', function() {
+                //Prepare json
+                var array = $('#jstree').jstree().get_json();
+                array.forEach(function(item) {
+                    trimText(item, 0)
+                });
+                saveJSTree("template", array);
+            });
+
+            $('#list').on('click', function() {
+                var date = $('#datepicker').val();
+                window.location.href = "/chosenmeals/" + date;
+            });
+
+        });
+    </script>
+
+</body>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Patient Meal Ordering Screen</title>
+  <script   src="https://code.jquery.com/jquery-3.3.1.min.js"   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="   crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+  
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<style>
+*{
+ box-sizing:border-box;
+ }
+h1 {
+    display: block;
+    font-size: 2em;
+    -webkit-margin-before: 0.67em;
+    -webkit-margin-after: 0.67em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+}
+h2 {
+    display: block;
+    font-size: 1.5em;
+    -webkit-margin-before: 0.83em;
+    -webkit-margin-after: 0.83em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+}
+h3 {
+    display: block;
+    font-size: 1.17em;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+}
+h4 {
+    display: block;
+    -webkit-margin-before: 1.33em;
+    -webkit-margin-after: 1.33em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+}
+h5 {
+    display: block;
+    font-size: 0.83em;
+    -webkit-margin-before: 1.67em;
+    -webkit-margin-after: 1.67em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+}
+h6 {
+    display: block;
+    font-size: 0.67em;
+    -webkit-margin-before: 2.33em;
+    -webkit-margin-after: 2.33em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+}
+body{
+	overflow: hidden;
+}
+#carousel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow-y:scroll ;
+    margin-bottom: 60px;
+
+}
+.header {
+  overflow:hidden;
+  position: fixed;
+  top: 0;
+  left:0;
+  text-align: center;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  width:100%;
+  z-index: 999;
+  background-color: #eee;
+}
+.header a{
+  display: block;
+    width: 50px;
+    height: 40px;
+    font-size: 60px;
+    font-weight: 100;
+    color: #fff;
+    text-align: center;
+    background: #222;
+    line-height:30px;
+    -webkit-border-radius: 23px;
+    -moz-border-radius: 23px;
+    border-radius: 23px;
+  opacity: .7;
+}
+@media (hover: hover) {
+  .header a:hover {
+    cursor: pointer;
+    outline: 0;
+    color: #fff;
+    text-decoration: none;
+    opacity: .9;
+  }
+}
+.header input {
+  margin-top:6px;
+  width: 200px;
+  height: 27px;
+  font-size: 20px;
+  padding-bottom: 2px;
+  padding-left:2px;
+  padding-right:2px;
+}
+#leftWrapper{
+  width: 50px;
+  height: 40px;
+  float: left;
+}
+#rightWrapper{
+  width: 50px;
+  height: 40px;
+  float: right;
+}
+#submit{
+  float: right;
+ font-size: 14px;
+ padding-top:5px;
+}
+.slide {
+    position: absolute;
+    margin-top: 40px;
+    margin-bottom:60px;
+    width: 100%;
+    height: 100%;
+    margin-left: 0%;
+    left: 200%;
+    
+    padding: 1em;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+/*
+.box{
+    font-size: 50px;
+    text-align: center;;
+}
+*/
+.slide > div, .slide > button{
+  position: relative;
+}
+.collapsible {
+  background-color: #666;
+  color: white;
+  cursor: pointer;
+  padding: 0.7em;
+  width: 100%;
+  border: solid 1px #222;
+  border-radius: 0.3em;
+  text-align: left;
+  outline: none;
+  font-size: 1.2em;
+}
+
+.active {
+  background-color: #333;
+}
+@media (hover: hover) {
+  .collapsible:hover {
+    background-color: #777;
+  }
+}
+.collapsible:after {
+  content: '\002B';
+  color: white;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.slide > .selectable {
+	list-style-type: none;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  /* max-height: 0; */
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  display: none;
+
+  -webkit-margin-before: 0em;
+-webkit-margin-after: 0em;
+-webkit-margin-start: 0px;
+-webkit-margin-end: 0px;
+}
+
+.selectable .ui-selected {
+  background: #F39814;
+  color: white;
+ }
+  .selectable li {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+    margin-top:3px;
+    margin-bottom:3px;
+    font-size: 1em;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+}
+</style>
+</head>
+
+<body>
+  <div class="header">
+<div id="leftWrapper">
+ <a id="left" class="prev" >&lsaquo;</a>
+</div>
+ <input id="name" placeholder="Type Name">
+ <div id="rightWrapper">
+ 
+ <a id="right"  class="next">&rsaquo;</a>
+ <a id="submit" >Submit</a>
+ </div>
+</div>
+
+<div id="carousel">
+    <div class="slide">
+      <h3>Please complete your meal selection.</h3>
+      <h1>Breakfast</h1>
+      
+      <button class="collapsible">Entrees Limit 2</button>
+      
+        <ul class="selectable">
+          <li>Buttermilk Pancakes</li>
+          <li>Scrambled Eggs</li>
+          <li>Cheerios</li>
+          <li>Corn Flakes</li>
+          <li>Raisin Bran</li>
+        </ul>
+    
+
+       <button class="collapsible">Sides Limit 3</button>
+        <ul class="selectable">
+          <li>Hash Brown</li>
+          <li>Bacon sausage</li>
+          <li>Turkey sausage</li>
+          <li>Banana</li>
+          <li>Fresh fruit cup</li>
+          <li>Vanila yogurt</li>
+        </ul>
+        <button class="collapsible">Hot cereal Limit 1</button>
+        <ul class="selectable">
+          <li>Oatmeal</li>
+          <li>Cream of Wheat</li>
+        </ul>
+              <button class="collapsible">Beverages Limit 2</button>
+        <ul class="selectable">
+          <li>Sprite Zero</li>
+          <li>Decaf Coffee</li>
+          <li>Light Lemonade</li>
+          <li>Decaf Tea</li>
+          <li>Apple Juice</li>
+          <li>Milk 1%</li>
+          <li>Milk 2%</li>
+        </ul>
+      <button class="collapsible">Condiments</button>
+        <ul class="selectable">
+          <li>Salt</li>
+          <li>Pepper</li>
+          <li>Sugar</li>
+          <li>Equal</li>
+          <li>Creamer</li>
+          <li>Butter</li>
+          <li>Margarine</li>
+          <li>Ketchup</li>
+          <li>Jelly</li>
+          <li>Honey</li>
+          <li>Brown Sugar</li>
+          <li>Syrup</li>
+          <li>Cream cheese</li>
+          <li>Hot sauce</li>
+          <li>Peanut Butter</li>
+
+        </ul>
+     
+    </div>
+    
+     <div class="slide">
+      <h3>Please complete your meal selection.</h3>
+      <h1>Lunch</h1>
+      
+      <button class="collapsible">Entrees -select 1 option</button>
+      
+        <ul class="selectable">
+          <li>Cheeseburger/chicken noodle soup/green beans/apple</li>
+          <li>Chicken tenders/steak fries/side salad/fruit cup</li>
+        </ul>
+    
+      <button class="collapsible">Beverages Limit 2</button>
+        <ul class="selectable">
+          <li>Sprite Zero</li>
+          <li>Decaf Coffee</li>
+          <li>Light Lemonade</li>
+          <li>Decaf Tea</li>
+          <li>Apple Juice</li>
+          <li>Milk 1%</li>
+          <li>Milk 2%</li>
+        </ul>
+    </div>
+
+     <div class="slide">
+      <h3>Please complete your meal selection.</h3>
+      <h1>Dinner</h1>
+      <button class="collapsible">Entrees -select 1 option</button>
+      
+        <ul class="selectable">
+          <li>Meatloaf/mash potatoes/mixed vegetables/banana</li>
+          <li>Roast turkey/stuffing/broccoli/fruit cup</li>
+        </ul>
+    
+      <button class="collapsible">Beverages Limit 2</button>
+        <ul class="selectable">
+          <li>Sprite Zero</li>
+          <li>Decaf Coffee</li>
+          <li>Light Lemonade</li>
+          <li>Decaf Tea</li>
+          <li>Apple Juice</li>
+          <li>Milk 1%</li>
+          <li>Milk 2%</li>
+        </ul>
+
+</div>
+
+</div>
+
+  <script>
+  	 $(function () {
+//treat header and content seperatly to manage css and icon
+
+//initial display of the first element
+$(".slide").each(function()	{
+	$(".collapsible", this).first().toggleClass("active").next().show()
+})
+
+	$(".collapsible").on("click", function()	{
+	//in case of clicking again the same element already open
+	if($(this).hasClass("active"))	return
+	//closing other contents
+	$(".current").children(".active").toggleClass("active").next().slideUp("fast");
+  
+  $header = $(this);
+  //getting the next sibling element
+  $content = $header.next();
+  
+	$header.toggleClass("active")
+  $content.slideToggle("fast")
+})
+
+
+  $("#carousel").children().first().addClass("current").css("left", "0%")
+  $("#left").hide()
+  $("#submit").hide()
+  $(".prev, .next").on("click", function() {
+    $currentDiv = $(".current");
+    //console.log($currentDiv)
+    
+    if($currentDiv.is(":animated")) return; // Don't register clicks if it's animating
+
+    var isNext = $(this).is(".next"),
+        w = $currentDiv.width() ;
+    //animate the current div to the left and place it on the right side (out of the screen)
+    $currentDiv.animate({
+    	//left: '-100%'
+    		left: (isNext ? '-100%' : '100%')
+    }, 500, function()	{
+        //$currentDiv.css('left', (isNext ? '-100%' : '100%'))
+        //$currentDiv.appendTo('#container');
+    }).removeClass("current");
+    //bring the before/next div onto the screen
+    $nextDiv = (isNext ? $currentDiv.next() : $currentDiv.prev())
+
+    $nextDiv.css('left', (isNext ? '100%' : '-100%'))
+    $nextDiv.animate({
+        left: '0%'
+    }, 500, function() {
+    })
+    $nextDiv.css('left', '100%').addClass("current");
+    
+    var isFirst = $("#carousel").children().first().hasClass("current");
+    var isLast = $("#carousel").children().last().hasClass("current");
+    isFirst ? $("#left").hide() : $("#left").show();
+    isLast ? $("#right").hide() : $("#right").show();
+    
+    isLast ? $("#submit").show() : $("#submit").hide();
+  });
+  
+	$(".selectable").bind('mousedown', function (e) {
+		e.metaKey = true;
+	}).selectable();
+  
+	$("#submit").on('click', function(){
+    if($("#name").val().length==0)  {
+      alert("type your name");
+      return;
+    }
+    
+		var json = createJson();
+ 		var data = JSON.stringify(json);
+
+		// Post a menu
+		var url = "/";
+		//There is a bug when sending nested array with jQuery ajax post method: empty arrays and other things get deleted
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST", url, true);
+		xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+		xhr.onload = function () {
+			//var result = JSON.parse(xhr.responseText);
+			if (xhr.readyState == 4 && xhr.status == "200") {
+				alert("Successfully submitted")
+				window.location.href = "/"
+			} else {
+				alert("Error: " + xhr.status);
+			}
+		}
+		xhr.send(data);   
+	})
+  function createJson() {
+  		var date = new Date();
+    var today = (date.getMonth()+1) + '-' + date.getDate() + '-' + date.getFullYear();
+		var chosenMeal = {};
+    var depth1 = [];
+		chosenMeal.name = $("#name").val();
+    chosenMeal.date = today;
+    
+    //depth 1: breakfast, lunch, dinner
+		$(".slide").each(function() {
+    	var temp1 = {};
+    	var text = $("h1", this).text();
+      var depth2 = [];
+      temp1.text = text;
+      
+      //depth 2: entree beverage
+      $(".collapsible", this).each(function()	{
+      	var temp2 = {text: $(this).text()};
+      	var depth3 = [];
+        //getting next sibling which is selectable after this header
+        var $selectable = $(this).next();
+        //depth 3: selectable options
+        $selectable.children(".ui-selected").each(function() {
+        	var temp3 = {text : $(this).text()};
+         	temp3.children = [];
+          depth3.push(temp3);
+        })
+        temp2.children = depth3;
+        depth2.push(temp2);
+      })
+      temp1.children = depth2;
+      depth1.push(temp1);
+		})
+    chosenMeal.children = depth1;
+  	return chosenMeal;
+  }
+})
+
+  </script>
+</body>
